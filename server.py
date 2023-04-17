@@ -35,6 +35,9 @@ def threaded_client(conn): #conn is an object that represents what's connected, 
         except:
             break
 
+    print("Lost connection")
+    conn.close()
+
 while True: #this while loop will continuously look for connections
     conn, addr = s.accept() #this will any incoming connection and store it as well as its adress
     print("Connected to: ", addr) #this shows us what IP adress is connecting
