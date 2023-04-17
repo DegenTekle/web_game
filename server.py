@@ -17,7 +17,7 @@ s.listen(2) #listening for connections, it opens up the port so we can start con
 print("Waiting for a connection, Server Started") #at this point we are running the server and everything works
 
 def threaded_client(conn): #conn is an object that represents what's connected, this function will run in the background, we don't have to wait for it to finish before we can accept another connection
-
+    conn.send(str.encode("Connected")) #when we connect we should send some validation token or id back to our network object or back to our client
     reply = ""
     while True: #we want this to continually run while our client is still connected
         try:
