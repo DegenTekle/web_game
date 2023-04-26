@@ -1,6 +1,6 @@
 #this class is responsible for holding all the information for the game that we need (e.g. Did player1 go yet, what move did he, wat move did player2, are they connected to the server. It will also store things like keeping track of who won or lost), we're doing this in its own file because it is going to be accessed by both the client and the server
 class Game:
-    def __init__(self,id):
+    def __init__(self, id):
         self.p1Went = False #this stands for if player1 has made a move or not
         self.p2Went = False
         self.ready = False
@@ -10,9 +10,13 @@ class Game:
         self.ties = 0
 
     def get_player_move(self, p): #this will get the player move that we ask for, 'p' will be either 0 or 1
+        """
+        :param p: [0,1]
+        :return: Move
+        """
         return self.moves[p]
 
-    def player(self, player, move): #this is going to update our moves' list with that player's move
+    def play(self, player, move): #this is going to update our moves' list with that player's move
         self.moves[player] = move
         if player == 0: #based on the player we have to update if p1Went or p2Went
             self.p1Went = True
@@ -31,18 +35,19 @@ class Game:
         p2 = self.moves[1].upper()[0]
 
         winner = -1 #that's because there could be no winner, there could be a tie (égalité)
-        if p1 == 'P' and p2 == 'R':
+        if p1 == "R" and p2 == "S":
             winner = 0 #that means player1 wins
-        elif p1 == 'P' and p2 == 'S':
+        elif p1 == "S" and p2 == "R":
             winner = 1 #that means player2 wins
-        elif p1 == 'R' and p2 == 'P':
-            winner = 1
-        elif p1 == 'R' and p2 == 'S':
+        elif p1 == "P" and p2 == "R":
             winner = 0
-        elif p1 == 'S' and p2 == 'P':
-            winner = 0
-        elif p1 == 'S' and p2 == 'R':
+        elif p1 == "R" and p2 == "P":
             winner = 1
+        elif p1 == "S" and p2 == "P":
+            winner = 0
+        elif p1 == "P" and p2 == "S":
+            winner = 1
+
         return winner
 
     def resetWent(self):

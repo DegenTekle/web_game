@@ -9,6 +9,7 @@ height = 700
 win = pygame.display.set_mode((width, height)) #creation of a window
 pygame.display.set_caption("Client")
 
+
 class Button: #this generates button, because we have three buttons it will make things easier
     def __init__(self, text, x, y, color): #we will say that the width and the height will be uniformed, and will make the three same buttons
         self.text = text
@@ -18,6 +19,12 @@ class Button: #this generates button, because we have three buttons it will make
         self.width = 150
         self.height = 100
 
+    def draw(self, win):
+        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
+        font = pygame.font.SysFont("comicsans", 40)
+        text = font.render(self.text, 1, (255,255,255))
+        win.blit(text, (self.x + round(self.width/2) - round(text.get_width()/2), self.y + round(self.height/2) - round(text.get_height()/2)))
+
     def click(self, pos): #this is going to define each button's area, thus help us to know if we clicked on a button or not
         x1 = pos[0]
         y1 = pos[1]
@@ -26,19 +33,20 @@ class Button: #this generates button, because we have three buttons it will make
         else:
             return False
 
-def redrawWindow(win, game, p): #with this function we draw on the screen
-    win.fill((255,255,255))
 
-    if not (game.connected()): #this happens if we have not yet the other player connected
-        font = pygame.font.SysFont("arial", 80)
-        text = font.render("Waiting for player...", 1, (255,0,0), True) #the "True" here stands for "bold"
+def redrawWindow(win, game, p): #with this function we draw on the screen
+    win.fill((128,128,128))
+
+    if not(game.connected()): #this happens if we have not yet the other player connected
+        font = pygame.font.SysFont("comicsans", 80)
+        text = font.render("Waiting for Player...", 1, (255,0,0), True) #the "True" here stands for "bold"
         win.blit(text, (width/2 - text.get_width()/2, height/2 - text.get_height()/2))
     else: #this happens if both players are connected
-        font = pygame.font.SysFont("arial", 60)
-        text = font.render("Your move", 1, (0,255,255)) #we're going to start with "Your move" statement and "Opponent" because those two aren't going to change, they're going to stay the same no matter what
+        font = pygame.font.SysFont("comicsans", 60)
+        text = font.render("Your Move", 1, (0, 255,255)) #we're going to start with "Your move" statement and "Opponent" because those two aren't going to change, they're going to stay the same no matter what
         win.blit(text, (80, 200)) #we're displaying the text at a static position on the screen
 
-        text = font.render("Opponent", 1, (0, 255, 255))
+        text = font.render("Opponents", 1, (0, 255, 255))
         win.blit(text, (380, 200)) #here we change the text's 'x' value so that we draw it aside of "Your move"
 
         #here we want to draw the moves (we want to know what move is, but we don't want to show the other player what our move is, unless both of them are finished)
@@ -47,38 +55,39 @@ def redrawWindow(win, game, p): #with this function we draw on the screen
 
         #now we're going to check if we should show these moves, should show "Waiting", or should show "Hidden"
         if game.bothWent(): #this happens when both players have played their turn
-            texte1 = font.render(move1, 1, (0,0,0)) #this is saying, if both of players have played their turn, we can show their move
-            texte2 = font.render(move2, 1, (0,0,0))
+            text1 = font.render(move1, 1, (0,0,0)) #this is saying, if both of players have played their turn, we can show their move
+            text2 = font.render(move2, 1, (0, 0, 0))
+
         else: #this happens if both players haven't finished playing their turn
             if game.p1Went and p == 0: #this happens if player1 has already played,not yet player2, and we're player1
                 text1 = font.render(move1, 1, (0,0,0)) #we're going to display this underneath "Your move"
             elif game.p1Went:
-                text1 = font.render("Hidden", 1, (0,0,0)) #we're going to display this underneath "Opponent"
+                text1 = font.render("Locked In", 1, (0, 0, 0)) #we're going to display this underneath "Opponent"
             else: #this happens if player1 hasn't played his turn yet
-                text1 = font.render("Waiting...", 1, (0,0,0))
+                text1 = font.render("Waiting...", 1, (0, 0, 0))
 
             if game.p2Went and p == 1: #this happens if player2 has already played,not yet player1, and we're player2
                 text2 = font.render(move2, 1, (0,0,0)) #we're going to display this underneath "Your move"
             elif game.p2Went:
-                text2 = font.render("Hidden", 1, (0,0,0)) #we're going to display this underneath "Opponent"
+                text2 = font.render("Locked In", 1, (0, 0, 0)) #we're going to display this underneath "Opponent"
             else: #this happens if player2 hasn't played his turn yet
-                text2 = font.render("Waiting...", 1, (0,0,0))
+                text2 = font.render("Waiting...", 1, (0, 0, 0))
 
-            #the text2 is dedicated to the player2 and the text1 to the player1
-            if p == 1:
-                win.blit(text2, 100, 350)
-                win.blit(text1, 400, 350)
-            else:
-                win.blit(text1, 100, 350)
-                win.blit(text2, 400, 350)
+        #the text2 is dedicated to the player2 and the text1 to the player1
+        if p == 1:
+            win.blit(text2, (100, 350))
+            win.blit(text1, (400, 350))
+        else:
+            win.blit(text1, (100, 350))
+            win.blit(text2, (400, 350))
+
+        for btn in btns:
+            btn.draw(win) #we're displaying the buttons
+
+    pygame.display.update()
 
 
-
-
-
-btns = [Button("Rock", 50, 500, (0,0,255)), Button("Paper", 450, 500, (0,255,0)), Button("Scissor", 250, 500, (255,0,0))] #we're defining the three buttons at the bottom of the screen "rock", "paper", and "scissors"
-
-
+btns = [Button("Rock", 50, 500, (0,0,0)), Button("Scissors", 250, 500, (255,0,0)), Button("Paper", 450, 500, (0,255,0))] #we're defining the three buttons at the bottom of the screen "rock", "paper", and "scissors"
 def main(): #below until the while loop it's the "start" part of the game which is executed only once
     run = True
     clock = pygame.time.Clock()
@@ -97,7 +106,7 @@ def main(): #below until the while loop it's the "start" part of the game which 
             break #the main function will be the actual game running, once we exit this main function we're going to go to the main menu (which will allow us to choose who we want to play against, etc...)
 
         if game.bothWent(): #now (we're not waiting for anything) we're going to see which player won, and display that message accordingly on the screen
-            redrawWindow() #by doing this we want to make sure if both players went, we're updating the window and on the window it will check if both players have gone, and it will draw the player's moves for us
+            redrawWindow(win, game, player) #by doing this we want to make sure if both players went, we're updating the window and on the window it will check if both players have gone, and it will draw the player's moves for us
             pygame.time.delay(500) #we're applying a little delay of 0.5 second so that we can see what both players did before immediately pop up the winning result
             try:
                 game = n.send("reset") #we're doing ths because when both players went, and we need to tell the server to reset those players moves two allow both players to move on the next game
@@ -107,18 +116,17 @@ def main(): #below until the while loop it's the "start" part of the game which 
                 break
 
             #after we've sent that reset we want to display a message on the screen indicating whether player1 or player2 did
-            font = pygame.font.SysFont("arial", 90)
+            font = pygame.font.SysFont("comicsans", 90)
             if (game.winner() == 1 and player == 1) or (game.winner() == 0 and player == 0):
-                text = font.render("You won!", 1, (255,0,0))
+                text = font.render("You Won!", 1, (255,0,0))
             elif game.winner() == -1:
-                text = font.render("Tie game.", 1, (255, 0, 0))
+                text = font.render("Tie Game!", 1, (255,0,0))
             else:
-                text = font.render("You lost...", 1, (255,0,0))
+                text = font.render("You Lost...", 1, (255, 0, 0))
 
             win.blit(text, (width/2 - text.get_width()/2, height/2 - text.get_height()/2)) #we're putting the font in the middle of the screen (to blit means to display)
             pygame.display.update()
             pygame.time.delay(2000) #2000ms so it's equal to 2 seconds, and then we're going to play the game again after
-
 
         for event in pygame.event.get(): #that means if the players hit the little 'x' button on the corner it will quit the game
             if event.type == pygame.QUIT:
@@ -127,6 +135,7 @@ def main(): #below until the while loop it's the "start" part of the game which 
 
             if event.type == pygame.MOUSEBUTTONDOWN: #this happens if the player actually presses the button down
                 pos = pygame.mouse.get_pos() #here we're getting the mouse's location
+
                 #now for every single button, if the mouse's location is on it we're going to do something accordingly
                 for btn in btns:
                     if btn.click(pos) and game.connected(): #the "btn.click(pos)" part tells us if the area we clicked on was an actual button area, the "game.connected()" part is to make sure that it's not going to let us press "Rock", "Paper", or "Scissors" unless the both players are on (avoid issue where one player can make a move before the other connects)
@@ -137,9 +146,28 @@ def main(): #below until the while loop it's the "start" part of the game which 
                             if not game.p2Went:
                                 n.send(btn.text)
 
-        redrawWindow(win, game, p)
+        redrawWindow(win, game, player)
 
+def menu_screen():
+    run = True
+    clock = pygame.time.Clock()
 
+    while run:
+        clock.tick(60)
+        win.fill((128, 128, 128))
+        font = pygame.font.SysFont("comicsans", 60)
+        text = font.render("Click to Play!", 1, (255,0,0))
+        win.blit(text, (100,200))
+        pygame.display.update()
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                run = False
 
-main() #with this we execute the code that we wrote
+    main() #with this we execute the code that we wrote
+
+while True:
+    menu_screen()
