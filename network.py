@@ -5,8 +5,8 @@ import pickle
 class Network: #creating a class that will be responsible to connecting to our server
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "192.168.115.148" #this variable must be the same as the one in the server's script
-        self.port = 5555
+        self.server = "139.162.189.92" #this variable must be the same as the one in the server's script
+        self.port = 1111
         self.addr = (self.server, self.port)
         self.p = self.connect() #when we connect to our server we want to return to each of the clients the starting position of their character (it will differ either it's player1 or player2)
 

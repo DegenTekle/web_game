@@ -3,7 +3,7 @@ from _thread import * #it means that we're going to set up a socket, and it will
 import pickle
 from game import Game
 
-server = "192.168.115.148" #inserting IP address, the server address, type "ipconfig"  in terminal -> it's the IPv4
+server = "" #inserting IP address, the server address, type "ipconfig"  in terminal -> it's the IPv4
 port = 5555 #it's a typical port that's open, it's going to look for certain connections
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #setting up a socket, the parameters are just types of connection
